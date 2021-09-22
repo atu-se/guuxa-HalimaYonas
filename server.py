@@ -1,27 +1,15 @@
 import socket
 
-HOST = '127.0.0.1'
-PORT = 1027
-BUFFER_SIZE = 512
+s= socket.socket()
+s.bind(('127.0.0.1',1027))
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
+s.listen(3)
 
-    conn, addr = s.accept()
-    with conn:
-        print('Connection opened:', addr)
+print("waiting connection")
+while True:
+            conn, addr = s.accept()
+            data = conn.recv(127).decode()
+            print("connected with",addr,data)
 
-        # you may wish to use full_message
-        # remember that it is a bytes array and if you
-        # compare it to a string, you should convert
-        # the string to a bytearray:  b'mystring'
-        full_message = bytearray()
-        while True:
-            data = conn.recv(BUFFER_SIZE)
-            full_message += data
-            if not data: # if no data, break from loop
-                break
-            conn.sendall(data)
-    
-    print("Connection closed.")
+            conn.send(bytes('welcome to ATU','utf-8'))
+            conn.close()
